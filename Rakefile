@@ -5,6 +5,7 @@ require 'github/markup'
 require 'rubocop/rake_task'
 require 'redcarpet'
 require 'yard/rake/yardoc_task'
+require 'sensu-yieldbot-consul'
 
 args = [:spec, :make_bin_executable, :yard, :rubocop]
 
@@ -23,6 +24,12 @@ end
 desc 'Make all plugins executable'
 task :make_bin_executable do
   `chmod -R +x bin/*`
+end
+
+desc 'Retrieve the current version of sensu-yieldbot-consul'
+task :version do
+  require 'drteeth/version'
+  puts DrTeeth::Version.json_version
 end
 
 task default: args

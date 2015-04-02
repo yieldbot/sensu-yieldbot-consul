@@ -39,4 +39,15 @@ task :version do
   puts SensuYieldbotConsul::Version.json_version
 end
 
+desc 'Bump the PATCH version of Sensu-Yieldbot-Plugins'
+task :bump do
+  version_file = 'lib/sensu-yieldbot-consul.rb'
+
+  # Read the file, bump the PATCH version
+  contents = File.read(version_file).gsub(/(PATCH = )(\d+)/) { |_| Regexp.last_match[1] + (Regexp.last_match[2].to_i + 1).to_s }
+
+  # Write the new contents of the file
+  File.open(version_file, 'w') { |file| file.puts contents }
+end
+
 task default: args

@@ -1,7 +1,7 @@
 #
 # Set gem version
 #
-module SensuPluginsConsul
+module SensuYieldbotConsul
   # Gem version
   VERSION = '0.0.1'
 end

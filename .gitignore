@@ -15,4 +15,3 @@ mkmf.log
 .vagrant/*
 .DS_Store
 .idea/*
-*.gem

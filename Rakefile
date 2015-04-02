@@ -6,14 +6,7 @@ require 'rubocop/rake_task'
 require 'redcarpet'
 require 'yard/rake/yardoc_task'
 
-desc 'Don\'t run Rubocop for unsupported versions'
-begin
-  if RUBY_VERSION >= '2.0.0'
-    args = [:spec, :make_bin_executable, :yard, :rubocop]
-  else
-    args = [:spec, :make_bin_executable, :yard]
-  end
-end
+args = [:spec, :make_bin_executable, :yard, :rubocop]
 
 YARD::Rake::YardocTask.new do |t|
   OTHER_PATHS = %w()

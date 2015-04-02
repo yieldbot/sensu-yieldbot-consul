@@ -3,7 +3,7 @@ $LOAD_PATH.unshift(lib) unless $LOAD_PATH.include?(lib)
 
 require 'date'
 
-require_relative 'lib/sensu-yieldbot-consul'
+require 'sensu-yieldbot-consul'
 
 Gem::Specification.new do |s|
   s.authors                = ["Yieldbot, Inc. and contributors"]
@@ -23,8 +23,8 @@ Gem::Specification.new do |s|
   s.version                = SensuYieldbotConsul::VERSION
 
   s.add_runtime_dependency 'sensu-plugin', '1.1.0'
-  s.add_runtime_dependency 'rest-client', '1.8.0'
-  s.add_runtime_dependency 'diplomat', '0.5.1'
+  s.add_runtime_dependency 'rest-client',  '1.8.0'
+  s.add_runtime_dependency 'diplomat',     '0.5.1'
 
   s.add_development_dependency 'rubocop',       '0.17.0'
   s.add_development_dependency 'rspec',         '~> 3.1'

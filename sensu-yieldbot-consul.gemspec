@@ -20,7 +20,7 @@ Gem::Specification.new do |s|
   s.required_ruby_version  = '>= 1.9.3'
   s.summary                = 'Sensu plugins for working with Consul'
   s.test_files             = s.files.grep(%r{^(test|spec|features)/})
-  s.version                = '0.0.1'
+  s.version                = SensuYieldbotConsul::Version::STRING
 
   s.add_runtime_dependency 'sensu-plugin', '1.1.0'
   s.add_runtime_dependency 'rest-client',  '1.8.0'

@@ -3,7 +3,7 @@ $LOAD_PATH.unshift(lib) unless $LOAD_PATH.include?(lib)
 
 require 'date'
 
-require 'sensu-yieldbot-consul'
+require_relative 'lib/sensu-yieldbot-consul'
 
 Gem::Specification.new do |s|
   s.authors                = ["Yieldbot, Inc. and contributors"]
@@ -20,7 +20,7 @@ Gem::Specification.new do |s|
   s.required_ruby_version  = '>= 1.9.3'
   s.summary                = 'Sensu plugins for working with Consul'
   s.test_files             = s.files.grep(%r{^(test|spec|features)/})
-  s.version                = SensuYieldbotConsul::VERSION
+  s.version                = '0.0.1'
 
   s.add_runtime_dependency 'sensu-plugin', '1.1.0'
   s.add_runtime_dependency 'rest-client',  '1.8.0'

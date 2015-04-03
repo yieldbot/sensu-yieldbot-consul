@@ -6,7 +6,6 @@ require 'rubocop/rake_task'
 require 'redcarpet'
 require 'yard/rake/yardoc_task'
 require_relative 'lib/sensu-yieldbot-consul'
-require 'json'
 
 args = [:spec, :make_bin_executable, :yard, :rubocop]
 
@@ -29,13 +28,6 @@ end
 
 desc 'Retrieve the current version of sensu-yieldbot-consul'
 task :version do
- #
- #  {
- #     "version" => "0.0.1"
- # }.to_json
-#  puts '0.0.1'.
-  # puts SensuYieldbotConsul::Version.json_version
-  # puts SensuYieldbotConsul::TOTAL.json_version
   puts SensuYieldbotConsul::Version.json_version
 end
 

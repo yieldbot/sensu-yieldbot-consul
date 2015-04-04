@@ -1,6 +1,6 @@
 #! /usr/bin/env ruby
 #
-#   check-service-consul-health
+#   check-consul-service-health
 #
 # DESCRIPTION:
 #   This plugin assists in checking the check status of a Consul Service
@@ -18,8 +18,8 @@
 #   gem: diplomat
 #
 # USAGE:
-#   ./check-service-consul-health -s influxdb
-#   ./check-service-consul-health -a
+#   ./check-consul-service-health -s influxdb
+#   ./check-consul-service-health -a
 #
 # NOTES:
 #

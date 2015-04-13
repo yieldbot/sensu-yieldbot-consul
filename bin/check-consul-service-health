@@ -68,39 +68,13 @@ class CheckConsulServiceHealth < Sensu::Plugin::Check::CLI
       checkId     = d['CheckID']
       checkStatus = d['Status']
 
-      # Check if the outout is json
-      begin
-        checkOutput = JSON.parse(d['Output'])
-      rescue Exception => e
-        checkOutput = nil
-      end
+      # If we are passing do nothing
+      next if checkStatus == 'passing'
 
-      # If the check is in warning/critical we do not need to process it
-      # for output status
-      if checkStatus != 'passing'
-        checks[checkId] = d['Output'] 
+      checks[checkId] = d['Output'] 
 
-        warnings  = true  if %w(warning).include? checkStatus
-        criticals = true  if %w(critical unknown).include? checkStatus
-        next
-      end
-
-      #
-      # If we got here, the check itself is passing, now check the output status if any
-      #
-
-      # Process the next if there is no valid checkOutput, status isnt set, or statis is ok
-      next if checkOutput.nil? || checkOutput['status'].nil? || checkOutput['status'] == 0
-
-      case checkOutput['status']
-      when 1
-        warnings  = true
-      else
-        criticals = true
-      end
-
-      # Add the check to the list of checks
-      checks[checkId] = checkOutput
+      warnings  = true  if %w(warning).include? checkStatus
+      criticals = true  if %w(critical unknown).include? checkStatus
     end
 
     critical checks if criticals

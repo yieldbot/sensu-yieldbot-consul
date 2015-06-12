@@ -83,3 +83,6 @@ DEPENDENCIES
   rubocop (= 0.17.0)
   sensu-yieldbot-consul!
   yard (~> 0.8)
+
+BUNDLED WITH
+   1.10.3

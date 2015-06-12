@@ -1,0 +1,119 @@
+#! /usr/bin/env ruby
+#
+#   check-consul-kv-ttl
+#
+# DESCRIPTION:
+#   This plugin assists in checking a Consul KV namespace for timed out global operations
+#
+# OUTPUT:
+#   plain text
+#
+# PLATFORMS:
+#   Linux
+#
+# DEPENDENCIES:
+#   gem: sensu-plugin
+#   gem: diplomat
+#
+# USAGE:
+#   ./check-consul-kv-ttl -kv 'ttl/service/tag' -w 30 -c 60
+#   ./check-consul-kv-ttl -kv 'ttl/service/tag' -w 30 -c 60 -j 'date'
+#
+# NOTES:
+#
+# LICENSE:
+#   Copyright 2015 Yieldbot, Inc. <devops@yieldbot.com>
+#   Released under the same terms as Sensu (the MIT license); see LICENSE
+#   for details.
+#
+
+require 'sensu-plugin/check/cli'
+require 'diplomat'
+require 'json'
+require 'time'
+
+class Hash
+  def dig(dotted_path)
+    parts = dotted_path.split '.', 2
+    match = self[parts[0]]
+    if !parts[1] or match.nil?
+      return match
+    else
+      return match.dig(parts[1])
+    end
+  end
+end
+
+#
+# Service Status
+#
+class CheckConsulKvTTL < Sensu::Plugin::Check::CLI
+  option :kv,
+       description: 'kv namespace to pull data from',
+       short: '-k NAMESPACE',
+       long: '--kv NAMESPACE',
+       default: nil,
+       required: true
+
+  option :json,
+       description: 'Process the value as JSON, using the given dotted path to retrieve the time',
+       short: '-j PATH',
+       long: '--json PATH',
+       default: nil
+
+  option :warning,
+       description: 'Warning TTL Threshold',
+       short: '-w THRESHOLD',
+       long: '--warning THRESHOLD',
+       proc: proc { |a| a.to_i },
+       default: 30
+
+  option :critical,
+       description: 'Critical TTL Threshold',
+       short: '-c THRESHOLD',
+       long: '--critical THRESHOLD',
+       proc: proc { |a| a.to_i },
+       default: 60
+  
+  # Do work
+  def run
+    # Retrieve the kv
+    data = Diplomat::Kv.get(config[:kv])
+
+    critical "Unable to retrieve KV: #{config[:kv]}" if data.nil?
+
+    # Check if the data is JSON or a timestamp
+    if config[:json].nil?
+      kv_time = data
+    else
+      begin
+        # Convert the data to JSON
+        json_data = JSON.parse(data)
+
+        # Dig to the time
+        kv_time = json_data.dig(config[:json])
+
+        critical "Unable to retrieve time from JSON data: #{data}" if kv_time.nil?
+      rescue JSON::ParserError => e
+        critical "Unable to parse JSON data: #{data}" 
+      end
+    end
+
+    begin
+      # Convert the time into ISO8601 DateTime object
+      start_time = Time.iso8601(kv_time)
+
+      # Get the current time UTC
+      end_time = Time.now.utc
+
+      # Get diff in seconds between start and end time
+      elapsed_seconds = (end_time - start_time).to_i
+
+      critical "TTL Expired! Elapsed Time: #{elapsed_seconds}"                if elapsed_seconds > config[:critical]
+      warning  "TTL Expiration Approaching! Elapsed Time: #{elapsed_seconds}" if elapsed_seconds > config[:warning]
+      ok  
+    rescue
+      critical "Unable to process DateTime objects!"
+    end
+  end
+end

@@ -17,7 +17,8 @@
 #
 # USAGE:
 #   ./check-consul-kv-ttl -kv 'ttl/service/tag' -w 30 -c 60
-#   ./check-consul-kv-ttl -kv 'ttl/service/tag' -w 30 -c 60 -j 'date'
+#   ./check-consul-kv-ttl -kv 'ttl/service/tag' -w 30 -c 60 -j -t 'date'
+#   ./check-consul-kv-ttl -kv 'ttl/service/tag' -w 30 -c 60 -j -t 'date' -s 'status'
 #
 # NOTES:
 #
@@ -56,9 +57,21 @@ class CheckConsulKvTTL < Sensu::Plugin::Check::CLI
        required: true
 
   option :json,
-       description: 'Process the value as JSON, using the given dotted path to retrieve the time',
-       short: '-j PATH',
-       long: '--json PATH',
+       description: 'Process the value as JSON',
+       short: '-j',
+       long: '--json',
+       default: true
+
+  option :timestamp_key,
+       description: 'Use the given dotted path to alert based on the time, if processing as JSON',
+       short: '-t PATH',
+       long: '--timestamp PATH',
+       default: nil
+
+ option :staus_key,
+       description: 'Use the given dotted path to alert based on the stauts, if processing as JSON',
+       short: '-s PATH',
+       long: '--status PATH',
        default: nil
 
   option :warning,
@@ -80,25 +93,44 @@ class CheckConsulKvTTL < Sensu::Plugin::Check::CLI
     # Retrieve the kv
     data = Diplomat::Kv.get(config[:kv])
 
+    # Critical if we are not able to retrieve the key
     critical "Unable to retrieve KV: #{config[:kv]}" if data.nil?
 
     # Check if the data is JSON or a timestamp
-    if config[:json].nil?
-      kv_time = data
-    else
+    if config[:json] 
       begin
         # Convert the data to JSON
         json_data = JSON.parse(data)
 
-        # Dig to the time
-        kv_time = json_data.dig(config[:json])
+        # If the status is set add that to the processing chain
+        if config[:status_key]
+          # Dig to the status
+          kv_status = json_data.dig(config[:status_key])
 
+          # Critical if we can not retrieve the status
+          critical "Unable to retrieve status from JSON data: #{data}" if kv_status.nil?
+
+          # Downcase to ease integration
+          kv_status = kv_status.downcase
+
+          # Flag based off of status
+          warning   if %w(warning).include? kv_status
+          critical  if %w(critical unknown).include? kv_status
+        end
+
+        # Dig to the time
+        kv_time = json_data.dig(config[:timestamp_key])
+
+        # Critical if we can not retrieve the time
         critical "Unable to retrieve time from JSON data: #{data}" if kv_time.nil?
       rescue JSON::ParserError => e
         critical "Unable to parse JSON data: #{data}" 
       end
+    else
+      kv_time = data
     end
 
+    # Timestamp calculation
     begin
       # Convert the time into ISO8601 DateTime object
       start_time = Time.iso8601(kv_time)

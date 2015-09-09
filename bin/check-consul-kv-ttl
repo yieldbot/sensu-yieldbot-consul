@@ -63,13 +63,13 @@ class CheckConsulKvTTL < Sensu::Plugin::Check::CLI
        default: true
 
   option :timestamp_key,
-       description: 'Use the given dotted path to alert based on the time, if processing as JSON',
+       description: 'Use the given dotted path to alert based on the time(ISO8601), if processing as JSON',
        short: '-t PATH',
        long: '--timestamp PATH',
        default: nil
 
  option :staus_key,
-       description: 'Use the given dotted path to alert based on the stauts, if processing as JSON',
+       description: 'Use the given dotted path to alert based on the status, if processing as JSON',
        short: '-s PATH',
        long: '--status PATH',
        default: nil
@@ -141,6 +141,7 @@ class CheckConsulKvTTL < Sensu::Plugin::Check::CLI
       # Get diff in seconds between start and end time
       elapsed_seconds = (end_time - start_time).to_i
 
+      critical "TTL calculation issue -- check date formats -- elapsed seconds is negative(#{elapsed_seconds})" if elapsed_seconds <= -1
       critical "TTL Expired! Elapsed Time: #{elapsed_seconds}"                if elapsed_seconds > config[:critical]
       warning  "TTL Expiration Approaching! Elapsed Time: #{elapsed_seconds}" if elapsed_seconds > config[:warning]
       ok  

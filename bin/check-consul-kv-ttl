@@ -68,7 +68,7 @@ class CheckConsulKvTTL < Sensu::Plugin::Check::CLI
        long: '--timestamp PATH',
        default: nil
 
- option :staus_key,
+ option :status_key,
        description: 'Use the given dotted path to alert based on the status, if processing as JSON',
        short: '-s PATH',
        long: '--status PATH',
@@ -90,11 +90,15 @@ class CheckConsulKvTTL < Sensu::Plugin::Check::CLI
   
   # Do work
   def run
-    # Retrieve the kv
-    data = Diplomat::Kv.get(config[:kv])
 
-    # Critical if we are not able to retrieve the key
-    critical "Unable to retrieve KV: #{config[:kv]}" if data.nil?
+    begin
+      # Retrieve the kv
+      data = Diplomat::Kv.get(config[:kv])
+    rescue Faraday::ResourceNotFound
+      critical "Key/Value(#{config[:kv]}) pair does not exist in Consul."
+    rescue  Exception => e
+      critical "Unhandled exception(#{e.class}) -- #{e.message}"
+    end
 
     # Check if the data is JSON or a timestamp
     if config[:json] 
@@ -114,8 +118,8 @@ class CheckConsulKvTTL < Sensu::Plugin::Check::CLI
           kv_status = kv_status.downcase
 
           # Flag based off of status
-          warning   if %w(warning).include? kv_status
-          critical  if %w(critical unknown).include? kv_status
+          warning 'Warning status detected!'    if %w(warning).include? kv_status
+          critical 'Critical status detected!'  if %w(critical unknown).include? kv_status
         end
 
         # Dig to the time

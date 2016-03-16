@@ -1,7 +1,7 @@
 PATH
   remote: .
   specs:
-    sensu-yieldbot-consul (0.0.19)
+    sensu-yieldbot-consul (0.0.20)
       diplomat (= 0.5.1)
       json (= 1.8.3)
       rest-client (= 1.8.0)
@@ -16,7 +16,7 @@ GEM
     diplomat (0.5.1)
       faraday (~> 0.9)
       json (~> 1.8)
-    domain_name (0.5.24)
+    domain_name (0.5.20160309)
       unf (>= 0.0.5, < 1.0.0)
     faraday (0.9.1)
       multipart-post (>= 1.2, < 3)
@@ -25,10 +25,10 @@ GEM
       domain_name (~> 0.5)
     json (1.8.3)
     method_source (0.8.2)
-    mime-types (2.6.1)
+    mime-types (2.99.1)
     mixlib-cli (1.5.0)
     multipart-post (2.0.0)
-    netrc (0.10.3)
+    netrc (0.11.0)
     parser (2.1.9)
       ast (>= 1.1, < 3.0)
       slop (~> 3.4, >= 3.4.5)
@@ -68,7 +68,7 @@ GEM
     slop (3.6.0)
     unf (0.1.4)
       unf_ext
-    unf_ext (0.0.7.1)
+    unf_ext (0.0.7.2)
     yard (0.8.7.6)
 
 PLATFORMS
@@ -86,4 +86,4 @@ DEPENDENCIES
   yard (~> 0.8)
 
 BUNDLED WITH
-   1.10.6
+   1.11.2

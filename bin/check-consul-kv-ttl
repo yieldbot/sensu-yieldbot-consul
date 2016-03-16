@@ -49,10 +49,9 @@ end
 # Service Status
 #
 class CheckConsulKvTTL < Sensu::Plugin::Check::CLI
-  option :server,
+  option :consul,
          description: 'consul server',
-         short: '-s SERVER',
-         long: '--server SERVER',
+         long: '--consul SERVER',
          default: 'http://localhost:8500'
 
   option :kv,
@@ -98,7 +97,7 @@ class CheckConsulKvTTL < Sensu::Plugin::Check::CLI
   def run
 
     Diplomat.configure do |dip|
-      dip.url = config[:server]
+      dip.url = config[:consul]
     end
 
     begin

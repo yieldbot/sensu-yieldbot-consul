@@ -97,8 +97,8 @@ class CheckConsulKvTTL < Sensu::Plugin::Check::CLI
   # Do work
   def run
 
-    Diplomat.configure do |config|
-      config.url = config[:server]
+    Diplomat.configure do |dip|
+      dip.url = config[:server]
     end
 
     begin

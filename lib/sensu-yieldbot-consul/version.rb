@@ -6,7 +6,7 @@ module SensuYieldbotConsul
   module Version
     MAJOR = 0
     MINOR = 0
-    PATCH = 20
+    PATCH = 21
 
     STRING = [MAJOR, MINOR, PATCH].compact.join('.')
 

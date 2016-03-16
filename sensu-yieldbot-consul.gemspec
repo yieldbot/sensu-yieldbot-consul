@@ -23,7 +23,7 @@ Gem::Specification.new do |s|
   s.test_files             = s.files.grep(%r{^(test|spec|features)/})
   s.require_paths          = %w(lib)
 
-  s.add_runtime_dependency 'diplomat',     '0.5.1'
+  s.add_runtime_dependency 'diplomat',     '0.15.0'
   s.add_runtime_dependency 'json',         '1.8.3'
   s.add_runtime_dependency 'rest-client',  '1.8.0'
   s.add_runtime_dependency 'sensu-plugin', '1.1.0'

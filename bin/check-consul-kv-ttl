@@ -49,6 +49,12 @@ end
 # Service Status
 #
 class CheckConsulKvTTL < Sensu::Plugin::Check::CLI
+  option :server,
+         description: 'consul server',
+         short: '-s SERVER',
+         long: '--server SERVER',
+         default: 'http://localhost:8500'
+
   option :kv,
        description: 'kv namespace to pull data from',
        short: '-k NAMESPACE',
@@ -90,6 +96,10 @@ class CheckConsulKvTTL < Sensu::Plugin::Check::CLI
   
   # Do work
   def run
+
+    Diplomat.configure do |config|
+      config.url = config[:server]
+    end
 
     begin
       # Retrieve the kv

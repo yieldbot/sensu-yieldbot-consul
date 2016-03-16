@@ -2,7 +2,7 @@ PATH
   remote: .
   specs:
     sensu-yieldbot-consul (0.0.21)
-      diplomat (= 0.5.1)
+      diplomat (= 0.15.0)
       json (= 1.8.3)
       rest-client (= 1.8.0)
       sensu-plugin (= 1.1.0)
@@ -13,7 +13,7 @@ GEM
     ast (2.0.0)
     coderay (1.1.0)
     diff-lcs (1.2.5)
-    diplomat (0.5.1)
+    diplomat (0.15.0)
       faraday (~> 0.9)
       json (~> 1.8)
     domain_name (0.5.20160309)
